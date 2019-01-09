@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BlackJack.Model
@@ -50,7 +51,11 @@ namespace BlackJack.Model
         /// </summary>
         public bool IsGameEnd { get; set; }
 
-        private string DealerHandStr => $"Dealer:{this.GetDealerHandsSum()}";
+        private string DealerHandStr(bool isEnd = false)
+        {
+            var num = isEnd ? this.GetDealerHandsSum() : this.DealerHands.FirstOrDefault()?.Number;
+            return $"Dealer:{num}";
+        }
 
         private string PlayerHandStr => $"Player:{this.GetPlayerHandsSum()}";
 
@@ -70,13 +75,13 @@ namespace BlackJack.Model
         {
             this.Initialize();
 
-            this.m_controller = new Dictionary<string, string>
+            this.m_controller = new Dictionary<string,Func< string>>
             {
-                {InputCommands.PlayerHand, this.DoPlayerHand() },
-                {InputCommands.DealerHand, this.DoDealerHand() },
-                {InputCommands.Help, this.DoHelp() },
-                {InputCommands.Draw, this.DoDraw() },
-                {InputCommands.End, this.DoEndGame() },
+                {InputCommands.PlayerHand,this.DoPlayerHand },
+                {InputCommands.DealerHand, this.DoDealerHand },
+                {InputCommands.Help, this.DoHelp },
+                {InputCommands.Draw, this.DoDraw },
+                {InputCommands.End, this.DoEndGame },
             };
         }
 
@@ -152,36 +157,33 @@ namespace BlackJack.Model
         /// <param name="input"></param>
         public string Input(string input)
         {
-            if (!this.m_controller.ContainsKey(input))
-            {
-                return "許されていないコマンドが入力されました。\nhelpを入力して、使い方を確認してください。";
-            }
-
-            return this.m_controller[input];
+            return !this.m_controller.ContainsKey(input)
+                ? "許されていないコマンドが入力されました。\nhelpを入力して、使い方を確認してください。"
+                : this.m_controller[input]();
         }
 
-        private readonly IDictionary<string, string> m_controller;
+        private readonly IDictionary<string, Func<string>> m_controller;
 
-        public string DoPlayerHand()
+        private string DoPlayerHand()
         {
             return string.Join("\n", this.PlayerHands.Select(x => $"{x.Call}")) + $"\n{this.PlayerHandStr}";
         }
 
-        public string DoDealerHand()
+        private string DoDealerHand()
         {
-            return this.DealerHands.FirstOrDefault()?.Call + $"\n{this.PlayerHandStr}";
+            return this.DealerHands.FirstOrDefault()?.Call + $"\n{this.DealerHandStr(false)}";
         }
 
-        public string DoHelp()
+        private string DoHelp()
         {
-            return $"使い方\n" +
+            return "使い方\n" +
                    $"{InputCommands.PlayerHand}:自分の手札を確認できます\n" +
                    $"{InputCommands.DealerHand}:ディーラーの手札を確認できます\n" +
                    $"{InputCommands.Draw}:手札を山札から引きます\n" +
                    $"{InputCommands.End}:終了して、ディーラーと勝負します";
         }
 
-        public string DoDraw()
+        private string DoDraw()
         {
             // プレイヤーが一枚ドロー
             this.PlayerDraw(1);
@@ -201,7 +203,7 @@ namespace BlackJack.Model
         /// <summary>
         /// 最後にディーラーがドローする
         /// </summary>
-        public string DoEndGame()
+        private string DoEndGame()
         {
             while (this.GetDealerHandsSum() < m_thresholdNum)
             {
@@ -220,12 +222,12 @@ namespace BlackJack.Model
                 ? Actor.Player
                 : Actor.Dealer;
 
-            return $"{this.PlayerHandStr}\n{this.DealerHandStr}";
+            return $"{this.PlayerHandStr}\n{this.DealerHandStr(true)}";
         }
 
         private string Burst(Actor actor)
         {
-            return $"{actor}がBurstしました\n{this.PlayerHandStr}\n{this.DealerHandStr}";
+            return $"{actor}がBurstしました\n{this.PlayerHandStr}\n{this.DealerHandStr(true)}";
         }
 
         #endregion
