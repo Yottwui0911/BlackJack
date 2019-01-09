@@ -8,7 +8,7 @@ namespace BlackJack.Model
     {
         #region consts
 
-        private static class InputCommands
+        public static class InputCommands
         {
             public static readonly string PlayerHand = "hand";
             public static readonly string DealerHand = "dhand";
@@ -75,7 +75,7 @@ namespace BlackJack.Model
         {
             this.Initialize();
 
-            this.m_controller = new Dictionary<string,Func< string>>
+            this.m_controller = new Dictionary<string, Func<string>>
             {
                 {InputCommands.PlayerHand,this.DoPlayerHand },
                 {InputCommands.DealerHand, this.DoDealerHand },
@@ -130,7 +130,7 @@ namespace BlackJack.Model
         {
             // 現時点では単純な足し算をする。
             // 将来的にはAceを1or11として数える。
-            return hands.Sum(x => x.Number);
+            return hands.Sum(x => x.IsPictureCards ? 10 : x.Number);
         }
 
         /// <summary>
@@ -176,11 +176,12 @@ namespace BlackJack.Model
 
         private string DoHelp()
         {
-            return "使い方\n" +
-                   $"{InputCommands.PlayerHand}:自分の手札を確認できます\n" +
-                   $"{InputCommands.DealerHand}:ディーラーの手札を確認できます\n" +
-                   $"{InputCommands.Draw}:手札を山札から引きます\n" +
-                   $"{InputCommands.End}:終了して、ディーラーと勝負します";
+            return "■使い方\n" +
+                   "以下のキーを入力してください。\n" +
+                   $"・{InputCommands.PlayerHand}:自分の手札を確認できます\n" +
+                   $"・{InputCommands.DealerHand}:ディーラーの手札を確認できます\n" +
+                   $"・{InputCommands.Draw}:手札を山札から引きます\n" +
+                   $"・{InputCommands.End}:終了して、ディーラーと勝負します";
         }
 
         private string DoDraw()
