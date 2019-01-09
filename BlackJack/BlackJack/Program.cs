@@ -9,6 +9,7 @@ namespace BlackJack
         {
             var controller = new BlackJackCardController();
             Console.WriteLine("ようこそ。ブラックジャックへ。");
+            Console.WriteLine(controller.Input(BlackJackCardController.InputCommands.Help));
 
             while (!controller.IsGameEnd)
             {
