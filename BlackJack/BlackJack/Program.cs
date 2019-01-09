@@ -6,7 +6,7 @@ namespace BlackJack
     {
         public static void Main(string[] args)
         {
-            var contoroller = new CardController();
+            var contoroller = new BlackJackCardController();
         }
     }
 }

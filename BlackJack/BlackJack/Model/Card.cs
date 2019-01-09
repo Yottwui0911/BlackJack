@@ -5,6 +5,16 @@ namespace BlackJack.Model
     public class Card
     {
         /// <summary>
+        /// 各Suitでの最高の値
+        /// </summary>
+        public static readonly int CardMaxNumber = 13;
+
+        /// <summary>
+        /// 俗称
+        /// </summary>
+        public string Call => $"{this.Suit}の{this.Number}";
+
+        /// <summary>
         /// 引数なしのコンストラクタの場合、Joker扱いする
         /// </summary>
         public Card()
