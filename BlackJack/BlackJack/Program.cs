@@ -1,4 +1,5 @@
 ﻿using System;
+using BlackJack.Analytics;
 using BlackJack.Model;
 
 namespace BlackJack
@@ -14,11 +15,24 @@ namespace BlackJack
             while (!controller.IsGameEnd)
             {
                 var input = Console.ReadLine();
-                Console.WriteLine(controller.Input(input));
+                if (input == "analytics")
+                {
+                    Analytics();
+                }
+                else
+                {
+                    Console.WriteLine(controller.Input(input));
+                }
             }
 
             Console.WriteLine($"勝者は{controller.Winner}です。");
             Console.ReadKey();
+        }
+        
+        public static void Analytics()
+        {
+            var an = new BlackJackAnalytics();
+            an.DoLoop();
         }
     }
 }

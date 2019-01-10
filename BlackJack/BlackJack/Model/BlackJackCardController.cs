@@ -26,7 +26,7 @@ namespace BlackJack.Model
         /// <summary>
         /// バーストの数値
         /// </summary>
-        private static readonly int m_burstNum = 21;
+        public static readonly int BurstNum = 21;
 
         #endregion
 
@@ -192,7 +192,7 @@ namespace BlackJack.Model
         {
             for (var i = 0; i < count; i++)
             {
-                if (val <= m_burstNum)
+                if (val <= BurstNum)
                 {
                     break;
                 }
@@ -259,7 +259,7 @@ namespace BlackJack.Model
             this.PlayerDraw(1);
             var msg = DrawMsg(Actor.Player, this.PlayerHands.LastOrDefault());
 
-            if (this.GetPlayerHandsSum() <= m_burstNum)
+            if (this.GetPlayerHandsSum() <= BurstNum)
             {
                 // ドローしたカード表示
                 return msg + $"{this.PlayerHandStr}\n";
@@ -283,7 +283,7 @@ namespace BlackJack.Model
                 msg.Append(DrawMsg(Actor.Dealer, this.DealerHands.LastOrDefault()));
             }
 
-            if (this.GetDealerHandsSum() > m_burstNum)
+            if (this.GetDealerHandsSum() > BurstNum)
             {
                 // バーストしたらプレイヤーの勝利
                 this.Winner = Actor.Player;
