@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analytics\BlackJackAnalytics.cs" />
     <Compile Include="Extentions\LinqExtentions.cs" />
     <Compile Include="Model\BlackJackCardController.cs" />
     <Compile Include="Model\Card.cs" />
