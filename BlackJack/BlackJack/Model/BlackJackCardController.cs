@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BlackJack.Model
 {
@@ -51,6 +52,8 @@ namespace BlackJack.Model
         /// </summary>
         public bool IsGameEnd { get; set; }
 
+        #region Messages
+
         private string DealerHandStr(bool isEnd = false)
         {
             var num = isEnd ? this.GetDealerHandsSum() : this.DealerHands.FirstOrDefault()?.Number;
@@ -58,6 +61,28 @@ namespace BlackJack.Model
         }
 
         private string PlayerHandStr => $"Player:{this.GetPlayerHandsSum()}";
+
+        /// <summary>
+        /// バーストしたときのメッセージ
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <returns></returns>
+        private string BurstMsg(Actor actor) => $"{actor}がBurstしました\n{this.PlayerHandStr}\n{this.DealerHandStr(true)}\n";
+
+        /// <summary>
+        /// 許可されていないコマンドのメッセージ
+        /// </summary>
+        private static readonly string UnauthorizedMsg = "許されていないコマンドが入力されました。\nhelpを入力して、使い方を確認してください。\n";
+
+        /// <summary>
+        /// カードを引いた時のメッセージ
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="card"></param>
+        /// <returns></returns>
+        private static string DrawMsg(Actor actor, Card card) => $"{actor}が{card?.Suit}の{card?.Number}を引きました。\n";
+
+        #endregion
 
         /// <summary>
         /// ディーラーの手札
@@ -79,7 +104,7 @@ namespace BlackJack.Model
             {
                 {InputCommands.PlayerHand,this.DoPlayerHand },
                 {InputCommands.DealerHand, this.DoDealerHand },
-                {InputCommands.Help, this.DoHelp },
+                {InputCommands.Help, DoHelp },
                 {InputCommands.Draw, this.DoDraw },
                 {InputCommands.End, this.DoEndGame },
             };
@@ -126,13 +151,57 @@ namespace BlackJack.Model
             }
         }
 
+        /// <summary>
+        /// 手札を見て、値を取得
+        /// </summary>
+        /// <param name="hands"></param>
+        /// <returns></returns>
         private static int GetCardsNumberSum(IEnumerable<Card> hands)
         {
-            // 現時点では単純な足し算をする。
-            // 将来的にはAceを1or11として数える。
-            return hands.Sum(x => x.IsPictureCards ? 10 : x.Number);
+            var enumerable = hands.ToList();
+            var val = enumerable.Sum(x =>
+            {
+                // 絵柄は10の扱い
+                if (x.IsPictureCards)
+                {
+                    return 10;
+                }
+
+                // エースは11として扱う
+                if (x.IsAce)
+                {
+                    return 11;
+                }
+
+                // そのほかは普通の数字
+                return x.Number;
+            });
+
+            var aceCount = enumerable.Count(x => x.IsAce);
+
+            return ConsiderAceValue(val, aceCount);
         }
 
+        /// <summary>
+        /// 21を超えている場合、エースは1とカウントできるようにする
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private static int ConsiderAceValue(int val, int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                if (val <= m_burstNum)
+                {
+                    break;
+                }
+
+                val = val - 10;
+            }
+            return val;
+        }
+        
         /// <summary>
         /// プレイヤーの合計の数値
         /// </summary>
@@ -158,7 +227,7 @@ namespace BlackJack.Model
         public string Input(string input)
         {
             return !this.m_controller.ContainsKey(input)
-                ? "許されていないコマンドが入力されました。\nhelpを入力して、使い方を確認してください。"
+                ? UnauthorizedMsg
                 : this.m_controller[input]();
         }
 
@@ -166,38 +235,39 @@ namespace BlackJack.Model
 
         private string DoPlayerHand()
         {
-            return string.Join("\n", this.PlayerHands.Select(x => $"{x.Call}")) + $"\n{this.PlayerHandStr}";
+            return string.Join("\n", this.PlayerHands.Select(x => $"{x.Call}")) + $"\n{this.PlayerHandStr}\n";
         }
 
         private string DoDealerHand()
         {
-            return this.DealerHands.FirstOrDefault()?.Call + $"\n{this.DealerHandStr(false)}";
+            return this.DealerHands.FirstOrDefault()?.Call + $"\n{this.DealerHandStr()}\n";
         }
 
-        private string DoHelp()
+        private static string DoHelp()
         {
             return "■使い方\n" +
                    "以下のキーを入力してください。\n" +
                    $"・{InputCommands.PlayerHand}:自分の手札を確認できます\n" +
                    $"・{InputCommands.DealerHand}:ディーラーの手札を確認できます\n" +
                    $"・{InputCommands.Draw}:手札を山札から引きます\n" +
-                   $"・{InputCommands.End}:終了して、ディーラーと勝負します";
+                   $"・{InputCommands.End}:終了して、ディーラーと勝負します\n";
         }
 
         private string DoDraw()
         {
             // プレイヤーが一枚ドロー
             this.PlayerDraw(1);
+            var msg = DrawMsg(Actor.Player, this.PlayerHands.LastOrDefault());
 
             if (this.GetPlayerHandsSum() <= m_burstNum)
             {
                 // ドローしたカード表示
-                return $"{this.PlayerHands.LastOrDefault()?.Suit}の{this.PlayerHands.LastOrDefault()?.Number}を引きました。\n{this.PlayerHandStr}";
+                return msg + $"{this.PlayerHandStr}\n";
             }
 
             // バーストしたらディーラーの勝利
             this.Winner = Actor.Dealer;
-            return this.Burst(Actor.Player);
+            return msg + this.BurstMsg(Actor.Player);
 
         }
 
@@ -206,29 +276,27 @@ namespace BlackJack.Model
         /// </summary>
         private string DoEndGame()
         {
+            var msg = new StringBuilder();
             while (this.GetDealerHandsSum() < m_thresholdNum)
             {
                 this.DealerDraw(1);
+                msg.Append(DrawMsg(Actor.Dealer, this.DealerHands.LastOrDefault()));
             }
 
             if (this.GetDealerHandsSum() > m_burstNum)
             {
                 // バーストしたらプレイヤーの勝利
                 this.Winner = Actor.Player;
-                return this.Burst(Actor.Dealer);
+                msg.Append(this.BurstMsg(Actor.Dealer));
+                return msg.ToString();
             }
 
             // どちらもバーストしていないので、手札の数値で勝負
             this.Winner = this.GetPlayerHandsSum() > this.GetDealerHandsSum()
                 ? Actor.Player
                 : Actor.Dealer;
-
-            return $"{this.PlayerHandStr}\n{this.DealerHandStr(true)}";
-        }
-
-        private string Burst(Actor actor)
-        {
-            return $"{actor}がBurstしました\n{this.PlayerHandStr}\n{this.DealerHandStr(true)}";
+            msg.Append($"{this.PlayerHandStr}\n{this.DealerHandStr(true)}\n");
+            return msg.ToString();
         }
 
         #endregion
