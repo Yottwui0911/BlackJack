@@ -126,13 +126,57 @@ namespace BlackJack.Model
             }
         }
 
+        /// <summary>
+        /// 手札を見て、値を取得
+        /// </summary>
+        /// <param name="hands"></param>
+        /// <returns></returns>
         private static int GetCardsNumberSum(IEnumerable<Card> hands)
         {
-            // 現時点では単純な足し算をする。
-            // 将来的にはAceを1or11として数える。
-            return hands.Sum(x => x.IsPictureCards ? 10 : x.Number);
+            var enumerable = hands.ToList();
+            var val = enumerable.Sum(x =>
+            {
+                // 絵柄は10の扱い
+                if (x.IsPictureCards)
+                {
+                    return 10;
+                }
+
+                // エースは11として扱う
+                if (x.IsAce)
+                {
+                    return 11;
+                }
+
+                // そのほかは普通の数字
+                return x.Number;
+            });
+
+            var aceCount = enumerable.Count(x => x.IsAce);
+
+            return ConsiderAceValue(val, aceCount);
         }
 
+        /// <summary>
+        /// 21を超えている場合、エースは1とカウントできるようにする
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private static int ConsiderAceValue(int val, int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                if (val <= m_burstNum)
+                {
+                    break;
+                }
+
+                val = val - 10;
+            }
+            return val;
+        }
+        
         /// <summary>
         /// プレイヤーの合計の数値
         /// </summary>
