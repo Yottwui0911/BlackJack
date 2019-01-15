@@ -1,5 +1,6 @@
 ﻿using System;
 using BlackJack.Model;
+using BlackJack.Model.BlackJackPlayer;
 
 namespace BlackJack.Analytics
 {
@@ -30,12 +31,12 @@ namespace BlackJack.Analytics
 
                 while (!controller.IsGameEnd)
                 {
-                    controller.Input(controller.GetPlayerHandsSum() < val
+                    controller.Input(controller.Player.GetCardsNumberSum() < val
                         ? BlackJackCardController.InputCommands.Draw
                         : BlackJackCardController.InputCommands.End);
                 }
 
-                if (controller.Winner == Actor.Player)
+                if (controller.Winner is User)
                 {
                     playerWinCount++;
                 }
@@ -54,19 +55,19 @@ namespace BlackJack.Analytics
             {
                 var controller = new BlackJackCardController();
 
-                if (controller.GetPlayerHandsSum() > val)
+                if (controller.Player.GetCardsNumberSum() > val)
                 {
                     // 手札が値より大きい場合、結果を無視する
                     continue;
                 }
 
                 // 目標の値まで引き続ける
-                while (controller.GetPlayerHandsSum() < val)
+                while (controller.Player.GetCardsNumberSum() < val)
                 {
                     controller.Input(BlackJackCardController.InputCommands.Draw);
                 }
                 
-                if (controller.GetPlayerHandsSum() != val)
+                if (controller.Player.GetCardsNumberSum() != val)
                 {
                     // 手札が値より大きい場合、結果を無視する
                     continue;
@@ -74,7 +75,7 @@ namespace BlackJack.Analytics
 
                 controller.Input(BlackJackCardController.InputCommands.End);
                 
-                if (controller.Winner == Actor.Player)
+                if (controller.Winner is User)
                 {
                     playerWinCount++;
                 }

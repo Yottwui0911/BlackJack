@@ -25,7 +25,7 @@ namespace BlackJack
                 }
             }
 
-            Console.WriteLine($"勝者は{controller.Winner}です。");
+            Console.WriteLine($"勝者は{controller.Winner.Name}です。");
             Console.ReadKey();
         }
         
