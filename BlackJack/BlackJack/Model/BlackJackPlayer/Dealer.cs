@@ -8,7 +8,7 @@ namespace BlackJack.Model.BlackJackPlayer
 
         public string HandStr(bool isEnd = false)
         {
-            var num = isEnd ? this.GetCardsNumberSum() : this.Hands.FirstOrDefault()?.Number;
+            var num = isEnd ? this.GetCardsNumberSum() : this.GetBlackJackNum(this.Hands.FirstOrDefault());
             return $"Dealer:{num}";
         }
 
