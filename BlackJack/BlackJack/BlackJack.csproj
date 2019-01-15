@@ -46,8 +46,12 @@
     <Compile Include="Analytics\BlackJackAnalytics.cs" />
     <Compile Include="Extentions\LinqExtentions.cs" />
     <Compile Include="Model\BlackJackCardController.cs" />
+    <Compile Include="Model\BlackJackPlayer\BlackJackPlayerBase.cs" />
     <Compile Include="Model\Card.cs" />
     <Compile Include="Model\CardController.cs" />
+    <Compile Include="Model\BlackJackPlayer\Dealer.cs" />
+    <Compile Include="Model\BlackJackPlayer\User.cs" />
+    <Compile Include="Model\PlayerBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
