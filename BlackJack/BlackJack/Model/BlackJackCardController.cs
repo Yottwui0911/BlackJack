@@ -32,18 +32,18 @@ namespace BlackJack.Model
 
         #region properties
 
-        private Actor m_winner;
+        private Actor? m_winner;
 
         /// <summary>
         /// 勝者
         /// </summary>
-        public Actor Winner
+        public Actor? Winner
         {
             get => this.m_winner;
             private set
             {
                 this.m_winner = value;
-                this.IsGameEnd = true;
+                this.IsGameEnd = value != null;
             }
         }
 
@@ -292,6 +292,13 @@ namespace BlackJack.Model
             }
 
             // どちらもバーストしていないので、手札の数値で勝負
+            if (this.GetPlayerHandsSum() == this.GetDealerHandsSum())
+            {
+                msg.Append("引き分けです！");
+                this.IsGameEnd = true;
+                return msg.ToString();
+            }
+
             this.Winner = this.GetPlayerHandsSum() > this.GetDealerHandsSum()
                 ? Actor.Player
                 : Actor.Dealer;
