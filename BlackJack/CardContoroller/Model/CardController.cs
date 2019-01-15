@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BlackJack.Extentions;
+using CardContoroller.Extentions;
 
-namespace BlackJack.Model
+namespace CardContoroller.Model
 {
     public abstract class CardController
     {

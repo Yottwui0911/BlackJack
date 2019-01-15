@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BlackJack.Extentions
+namespace CardContoroller.Extentions
 {
     public static class LinqExtentions
     {

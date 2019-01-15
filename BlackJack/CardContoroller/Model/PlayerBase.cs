@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BlackJack.Model
+namespace CardContoroller.Model
 {
     public abstract class PlayerBase
     {

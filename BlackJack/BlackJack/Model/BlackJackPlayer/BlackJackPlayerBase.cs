@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CardContoroller.Model;
 
 namespace BlackJack.Model.BlackJackPlayer
 {
@@ -16,27 +17,38 @@ namespace BlackJack.Model.BlackJackPlayer
         public int GetCardsNumberSum()
         {
             var enumerable = this.Hands.ToList();
-            var val = enumerable.Sum(x =>
-            {
-                // 絵柄は10の扱い
-                if (x.IsPictureCards)
-                {
-                    return 10;
-                }
-
-                // エースは11として扱う
-                if (x.IsAce)
-                {
-                    return 11;
-                }
-
-                // そのほかは普通の数字
-                return x.Number;
-            });
+            var val = enumerable.Sum(x => this.GetBlackJackNum(x));
 
             var aceCount = enumerable.Count(x => x.IsAce);
 
             return ConsiderAceValue(val, aceCount);
+        }
+
+        /// <summary>
+        /// BlackJack専用の数値の扱い
+        /// </summary>
+        /// <returns></returns>
+        protected int GetBlackJackNum(Card card)
+        {
+            if(card == null)
+            {
+                return 0;
+            }
+
+            // 絵柄は10の扱い
+            if (card.IsPictureCards)
+            {
+                return 10;
+            }
+
+            // エースは11として扱う
+            if (card.IsAce)
+            {
+                return 11;
+            }
+
+            // そのほかは普通の数字
+            return card.Number;
         }
 
         /// <summary>
