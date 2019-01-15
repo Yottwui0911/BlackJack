@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BlackJack.Model.BlackJackPlayer;
+using CardContoroller.Model;
 
 namespace BlackJack.Model
 {
