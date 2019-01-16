@@ -74,13 +74,15 @@ namespace BlackJack.Model.BlackJackPlayer
         /// <summary>
         /// 山札からカードをドローする
         /// </summary>
-        /// <param name="controller"></param>
+        /// <param name="deck"></param>
         /// <param name="count"></param>
-        public void Draw(Deck controller, int count)
+        public void Draw(Deck deck, int count)
         {
             for (var i = 0; i < count; i++)
             {
-                controller.Draw(this.Hands);
+                var card = deck.Cards.FirstOrDefault();
+                this.Hands.Add(card);
+                deck.Cards.Remove(card);
             }
         }
     }

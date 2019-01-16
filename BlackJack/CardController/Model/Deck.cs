@@ -5,17 +5,22 @@ using CardController.Extentions;
 
 namespace CardController.Model
 {
-    public abstract class Deck
+    public class Deck
     {
+        public Deck(bool hasJoker = false)
+        {
+            this.Initialize(hasJoker);
+        }
+
         /// <summary>
         /// 山札のカード
         /// </summary>
-        protected List<Card> Cards { get; set; } = new List<Card>();
+        public List<Card> Cards { get; set; } = new List<Card>();
 
         /// <summary>
         /// 初期化
         /// </summary>
-        public virtual void Initialize(bool hasJoker = false)
+        public void Initialize(bool hasJoker = false)
         {
             var cards = new List<Card>();
 
@@ -49,13 +54,6 @@ namespace CardController.Model
         public void Shuffle()
         {
             this.Cards = Shuffle(this.Cards);
-        }
-
-        public void Draw(ICollection<Card> hands)
-        {
-            var card = this.Cards.FirstOrDefault();
-            hands.Add(card);
-            this.Cards.Remove(card);
         }
     }
 }

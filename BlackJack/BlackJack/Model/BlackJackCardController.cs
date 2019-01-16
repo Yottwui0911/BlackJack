@@ -7,13 +7,13 @@ using CardController.Model;
 
 namespace BlackJack.Model
 {
-    public sealed class BlackJackCardController : Deck
+    public sealed class BlackJackCardController
     {
         public BlackJackCardController()
         {
             this.Dealer = new Dealer();
             this.Player = new User();
-
+            this.Deck = new Deck();
             this.Initialize();
 
             this.m_controller = new Dictionary<string, Func<string>>
@@ -81,6 +81,11 @@ namespace BlackJack.Model
         /// </summary>
         public User Player { get; }
 
+        /// <summary>
+        /// 山札
+        /// </summary>
+        public Deck Deck { get; }
+
         #endregion
 
         #region Messages
@@ -109,19 +114,16 @@ namespace BlackJack.Model
 
         #region methods
 
-        /// <inheritdoc />
         /// <summary>
         /// 初期化
         /// </summary>
-        public override void Initialize(bool hasJoker = false)
+        public void Initialize()
         {
-            base.Initialize(hasJoker);
-
             // ディーラーが2枚ドローする
-            this.Dealer.Draw(this, 2);
+            this.Dealer.Draw(this.Deck, 2);
 
             // プレイヤーが2枚ドローする
-            this.Player.Draw(this, 2);
+            this.Player.Draw(this.Deck, 2);
         }
 
         /// <summary>
@@ -160,7 +162,7 @@ namespace BlackJack.Model
         private string DoDraw()
         {
             // プレイヤーが一枚ドロー
-            this.Player.Draw(this, 1);
+            this.Player.Draw(this.Deck, 1);
             var msg = DrawMsg(this.Player, this.Player.Hands.LastOrDefault());
 
             if (this.Player.GetCardsNumberSum() <= BurstNum)
@@ -183,7 +185,7 @@ namespace BlackJack.Model
             var msg = new StringBuilder();
             while (this.Dealer.GetCardsNumberSum() < m_thresholdNum)
             {
-                this.Dealer.Draw(this, 1);
+                this.Dealer.Draw(this.Deck, 1);
                 msg.Append(DrawMsg(this.Dealer, this.Dealer.Hands.LastOrDefault()));
             }
 
