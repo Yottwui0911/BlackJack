@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CardContoroller.Extentions
+namespace CardController.Extentions
 {
     public static class LinqExtentions
     {

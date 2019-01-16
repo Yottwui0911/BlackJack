@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CardContoroller.Extentions;
+using CardController.Extentions;
 
-namespace CardContoroller.Model
+namespace CardController.Model
 {
-    public abstract class CardController
+    public abstract class Deck
     {
         /// <summary>
         /// 山札のカード

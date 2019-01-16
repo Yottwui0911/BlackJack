@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BlackJack.Model.BlackJackPlayer;
-using CardContoroller.Model;
+using CardController.Model;
 
 namespace BlackJack.Model
 {
-    public sealed class BlackJackCardController : CardController
+    public sealed class BlackJackCardController : Deck
     {
         public BlackJackCardController()
         {

@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using CardContoroller.Model;
+using CardController.Model;
 
 namespace BlackJack.Model.BlackJackPlayer
 {
@@ -76,7 +76,7 @@ namespace BlackJack.Model.BlackJackPlayer
         /// </summary>
         /// <param name="controller"></param>
         /// <param name="count"></param>
-        public void Draw(CardController controller, int count)
+        public void Draw(Deck controller, int count)
         {
             for (var i = 0; i < count; i++)
             {

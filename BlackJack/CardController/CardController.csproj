@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1308C63-F640-43EF-9EA9-EA3B509EB989}</ProjectGuid>
+    <ProjectGuid>{339BAE65-4B12-4B4F-BD55-54D0047281D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CardContoroller</RootNamespace>
-    <AssemblyName>CardContoroller</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>CardController</RootNamespace>
+    <AssemblyName>CardController</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Extentions\LinqExtentions.cs" />
     <Compile Include="Model\Card.cs" />
-    <Compile Include="Model\CardController.cs" />
+    <Compile Include="Model\Deck.cs" />
     <Compile Include="Model\PlayerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
