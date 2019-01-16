@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CardContoroller.Model
+namespace CardController.Model
 {
     public abstract class PlayerBase
     {
